@@ -1,0 +1,27 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# --- Virtual environments ---
+.venv/
+venv/
+env/
+myenv/
+
+# --- Raw dataset: licensing unconfirmed, keep local (see docs/final_plan.md Task 1) ---
+data/raw/*.csv
+
+# --- Superseded Word documents (replaced by Markdown) ---
+*.docx
+
+# --- Quarto build output ---
+/reports/quarto/_site/
+.quarto/
+
+# --- OS / editor junk ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
