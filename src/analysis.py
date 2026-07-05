@@ -33,6 +33,7 @@ from sklearn.metrics import (
     confusion_matrix, roc_curve,
 )
 from xgboost import XGBClassifier
+import shap
 
 warnings.filterwarnings("ignore")
 RANDOM_STATE = 42
@@ -349,6 +350,47 @@ plt.ylabel("Net benefit ($M)")
 plt.title("Net benefit is robust across success-rate assumptions")
 savefig("11_sensitivity.png")
 
+# ----------------------------------------------------------------------------
+# 6. INTERPRETABILITY & SEGMENTATION (nice-to-haves)
+# ----------------------------------------------------------------------------
+# 6a. SHAP beeswarm — per-customer feature contributions to the XGBoost churn score
+xgb_tx = xgb_pipe.named_steps["pre"].transform(X_test)
+shap_idx = np.random.RandomState(RANDOM_STATE).choice(
+    len(xgb_tx), size=min(3000, len(xgb_tx)), replace=False)
+shap_values = shap.TreeExplainer(xgb).shap_values(xgb_tx[shap_idx])
+shap.summary_plot(shap_values, xgb_tx[shap_idx], feature_names=feat_names,
+                  max_display=12, show=False)
+savefig("12_shap_beeswarm.png")
+print("\nSaved SHAP beeswarm -> 12_shap_beeswarm.png")
+
+# 6b. Segment-level ROI — target the top-20% by risk *within* each equipment-age segment
+def segment_roi(g):
+    """Run the value-weighted top-fraction campaign inside one segment; return its economics."""
+    g = g.sort_values("score", ascending=False)
+    n = max(1, int(len(g) * TARGET_FRACTION))
+    tgt = g.head(n)
+    caught = float(tgt["churn"].sum())
+    arpu = tgt.loc[tgt["churn"] == 1, "avgrev"].mean()
+    cost = n * scale * OFFER_COST
+    revenue = caught * scale * SUCCESS_RATE * arpu * HORIZON_MONTHS
+    return pd.Series({"contacted_full": round(n * scale), "churn_rate": g["churn"].mean(),
+                      "avg_arpu": arpu, "net": revenue - cost, "roi": (revenue - cost) / cost})
+
+seg = test.copy()
+seg["eqp_segment"] = pd.qcut(seg["eqpdays"].rank(method="first"), 3,
+                             labels=["New handset", "Mid handset", "Old handset"])
+seg_tbl = seg.groupby("eqp_segment", observed=True).apply(segment_roi)
+print("\n===== SEGMENT-LEVEL ROI (top-20% risk-targeted within each equipment-age tercile) =====")
+print(seg_tbl.round(2).to_string())
+plt.figure(figsize=(8, 5))
+sns.barplot(x=seg_tbl.index, y=seg_tbl["roi"], color=PALETTE["stayed"])
+plt.axhline(roi, ls="--", color="black", lw=1.2, label=f"overall {roi:.1f}x")
+plt.ylabel("ROI (net benefit / cost)")
+plt.xlabel("Equipment-age segment (risk-targeted within)")
+plt.title("Retention ROI by handset-age segment")
+plt.legend()
+savefig("13_segment_roi.png")
+
 # Export the cumulative-gains curve + assumptions as JSON so the Quarto ROI calculator recomputes live in the browser
 order_r = order.reset_index(drop=True)
 churn_arr = order_r["churn"].to_numpy()
@@ -367,12 +409,27 @@ for f in np.linspace(0.01, 1.0, 100):
         "churners_caught_full": round(caught * scale, 1),
         "arpu_caught": round(arpu, 2),
     })
+# Anonymised top-N risk-ranked target list (model output only -> safe to publish, no raw rows)
+top_n = min(2000, len(order))
+targets = []
+for i, (_, row) in enumerate(order.head(top_n).iterrows(), start=1):
+    arpu = row["avgrev"]
+    targets.append({
+        "rank": i,
+        "customer_ref": f"CUST-{i:05d}",
+        "risk_score": round(float(row["score"]), 4),
+        "risk_decile": int(row["risk_decile"]),
+        "avg_arpu_usd": round(float(arpu), 2) if pd.notna(arpu) else None,
+        "priority": "High" if i <= top_n / 3 else ("Medium" if i <= 2 * top_n / 3 else "Watch"),
+    })
+
 report_data = {
     "base_customers": int(BASE_CUSTOMERS),
     "total_churners_full": round(float(total_churn) * scale, 1),
     "defaults": {"offer_cost": OFFER_COST, "success_rate": SUCCESS_RATE,
                  "horizon_months": HORIZON_MONTHS, "target_fraction": TARGET_FRACTION},
     "curve": curve,
+    "targets": targets,
 }
 data_out = ROOT / "reports" / "quarto" / "data.json"
 if USING_RAW:

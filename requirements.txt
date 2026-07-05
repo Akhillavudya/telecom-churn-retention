@@ -9,6 +9,7 @@ pandas==3.0.3
 # --- Modeling ---
 scikit-learn==1.9.0
 xgboost==3.2.0
+shap==0.51.0                 # per-customer feature attributions (interpretability panel)
 
 # --- Visualization (also renders the PDF slide deck via matplotlib PdfPages) ---
 matplotlib==3.10.9
