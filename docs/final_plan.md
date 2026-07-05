@@ -204,7 +204,7 @@ Alt DS-flavored line (if space on a DS CV): *"Engineered 6 domain features, benc
 
 ## 10. Build Checklist
 
-- [ ] Confirm/handle GCI data licensing; sample or `.gitignore` the CSVs (Task 1)
+- [x] Confirm/handle GCI data licensing; sample or `.gitignore` the CSVs (Task 1) — **raw git-ignored + committed 3,000-row synthetic sample (`src/make_sample_data.py`); `analysis.py` auto-falls back to it so a clean clone runs end-to-end, and the real `data.json` is write-guarded. See `docs/explanation/step1_data_sample.md`**
 - [x] Restructure into industry-standard DA layout — `data/`, `src/`, `notebooks/`, `reports/`, `docs/`; update hard-coded paths; re-run `analysis.py` to confirm all 11 figures regenerate (Task 1.5, §2A) — **done; all 3 scripts reproduce end-to-end, see `docs/explanation/step1_5_explanation.md`**
 - [x] `requirements.txt` pinned (Task 2) — 6 direct deps at exact installed versions; see `docs/explanation/step2_requirements.md`
 - [x] `README.md` — pitch, run steps, locked numbers, 3 embedded figures, honesty box (Task 3) — **drafted; one placeholder (live Quarto URL) pending Task 7. See `docs/explanation/step3_readme.md`**

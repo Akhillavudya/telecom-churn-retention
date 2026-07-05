@@ -58,10 +58,16 @@ def savefig(name):
 # ----------------------------------------------------------------------------
 # 1. LOAD & MERGE
 # ----------------------------------------------------------------------------
-here = Path(__file__).resolve().parent
-client = pd.read_csv(ROOT / "data" / "raw" / "Client.csv")
-record = pd.read_csv(ROOT / "data" / "raw" / "Record.csv")
+def data_path(name):
+    """Use the real raw file if present, else fall back to the committed synthetic sample."""
+    raw = ROOT / "data" / "raw" / name
+    return raw if raw.exists() else ROOT / "data" / "sample" / name
+
+USING_RAW = (ROOT / "data" / "raw" / "Client.csv").exists()
+client = pd.read_csv(data_path("Client.csv"))
+record = pd.read_csv(data_path("Record.csv"))
 df = record.merge(client, on="Customer_ID", how="inner")
+print(f"Data source: {'raw (full dataset)' if USING_RAW else 'sample (synthetic stand-in)'}")
 print(f"Client {client.shape} | Record {record.shape} | Merged {df.shape}")
 
 # ----------------------------------------------------------------------------
@@ -369,9 +375,12 @@ report_data = {
     "curve": curve,
 }
 data_out = ROOT / "reports" / "quarto" / "data.json"
-data_out.parent.mkdir(parents=True, exist_ok=True)
-data_out.write_text(json.dumps(report_data, indent=2))
-print(f"Wrote calculator data -> {data_out}")
+if USING_RAW:
+    data_out.parent.mkdir(parents=True, exist_ok=True)
+    data_out.write_text(json.dumps(report_data, indent=2))
+    print(f"Wrote calculator data -> {data_out}")
+else:
+    print(f"Skipped data.json write (synthetic sample run; kept real calculator data at {data_out})")
 
 print(f"\nAll figures saved to {FIG_DIR}")
 print("DONE.")
