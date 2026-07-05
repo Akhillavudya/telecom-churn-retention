@@ -1,0 +1,15 @@
+# Pinned dependencies for the telecom churn analysis pipeline.
+# Tested on Python 3.11. Install with: pip install -r requirements.txt
+# Versions are exact (==) so a clean clone reproduces the same figures and metrics.
+
+# --- Data handling ---
+numpy==2.4.4
+pandas==3.0.3
+
+# --- Modeling ---
+scikit-learn==1.9.0
+xgboost==3.2.0
+
+# --- Visualization (also renders the PDF slide deck via matplotlib PdfPages) ---
+matplotlib==3.10.9
+seaborn==0.13.2
