@@ -332,7 +332,7 @@ quality — which is what the targeting strategy in Section 8 depends on.
 md(r"""
 ## 7 · Evaluation
 
-We name the model, metric, and score explicitly (rubric requirement 3) and inspect
+We name the model, metric, and score explicitly, and inspect
 *where* it errs and *which signals* it uses.
 """)
 code(r"""
