@@ -66,6 +66,22 @@ ROC-AUC ≈ **0.70** is a *modest but honest* result: it means that, given a ran
 non-churner, the model ranks the churner as higher-risk about 70% of the time (0.50 would be a coin
 flip). Modest AUC is fine here — the value comes from the *ranking*, which the next section cashes in.
 
+## What drives each customer's score — SHAP
+
+A global importance chart says *which* features matter on average; a retention analyst also needs the
+*per-customer* story — for **this** customer, what pushed their risk up? A **SHAP beeswarm** answers
+that. SHAP (SHapley Additive exPlanations) borrows a fair-credit idea from game theory: it splits each
+prediction into a sum of per-feature contributions. In the plot, every dot is one customer; its
+horizontal position is how much that feature moved *their* churn score (right = pushed toward churn),
+and its colour is the feature's value (red = high, blue = low).
+
+![SHAP beeswarm — per-customer feature contributions to the XGBoost score](../figures/12_shap_beeswarm.png)
+
+Read a row as: if the **red dots sit on the right**, then *high* values of that feature push customers
+toward churn. Equipment age and the engineered usage/overage features line up with what the EDA showed
+— evidence the model learned real, explainable signal rather than noise, and a defensible answer to
+"*why* was this customer flagged?"
+
 ## Targeting — the analyst headline
 
 A **cumulative-gains** curve answers the money question directly: *if I contact the top X% by risk,
@@ -94,6 +110,24 @@ case is stress-tested with a sensitivity analysis: net benefit stays positive ac
 success-rate assumptions.
 
 ![Net benefit is robust across success-rate assumptions](../figures/11_sensitivity.png)
+
+## Where to point the budget — segment-level ROI
+
+The 2.1× headline is an *average*. Splitting customers into equipment-age thirds and running the **same
+top-20%-by-risk campaign inside each segment** shows the money is not spread evenly:
+
+![Retention ROI by handset-age segment](../figures/13_segment_roi.png)
+
+| Segment (handset age) | Segment churn rate | ARPU of caught churners | Targeted ROI |
+|---|---|---|---|
+| New handset | 40% | **$72** | **2.4×** |
+| Mid handset | 54% | $59 | 2.3× |
+| Old handset | 55% | $52 | 1.8× |
+
+The twist: **old-handset customers churn the most, but new-handset churners are worth the most** ($72
+vs $52 ARPU). Because retention value = risk **×** dollar value, the best ROI comes from the *newer,
+higher-value* segment — not the highest-risk one. Chasing raw churn probability alone would point the
+budget at the least profitable group; this is exactly what *value-weighted* targeting is for.
 
 ## Interactive ROI calculator {#calculator}
 
@@ -201,6 +235,36 @@ The default sliders reproduce the report's headline: **~$2.07M net benefit at 2.
 curve peaks near the middle — contacting *too many* customers spends offer budget on low-risk people,
 while contacting too few leaves saveable churners on the table.
 :::
+
+## Download the target list
+
+The pipeline exports a ready-to-action **target list**: the 2,000 highest-risk customers, ranked, each
+with their risk score, decile, ARPU, and a priority band. Identifiers are anonymised (`CUST-#####`), so
+this is a shareable deliverable that contains **no raw customer records**. It downloads straight from
+your browser — the CSV is built client-side from the embedded data, no server involved.
+
+```{ojs}
+//| echo: false
+// Build a CSV from the precomputed target list and hand it to the browser as a download.
+{
+  if (!data.targets) return html`<em>Target list unavailable in this build.</em>`;
+  const cols = ["rank", "customer_ref", "risk_score", "risk_decile", "avg_arpu_usd", "priority"];
+  const csv = [cols.join(",")]
+    .concat(data.targets.map((r) => cols.map((c) => r[c]).join(",")))
+    .join("\n");
+  const url = URL.createObjectURL(new Blob([csv], {type: "text/csv"}));
+  return html`<a href=${url} download="retention_target_list_top2000.csv"
+     style="display:inline-block; padding:10px 18px; background:#1a7f37; color:white;
+            border-radius:8px; text-decoration:none; font-weight:600;">⬇ Download target list (top 2,000, CSV)</a>`;
+}
+```
+
+Preview — the first 10 rows of what you'll get:
+
+```{ojs}
+//| echo: false
+Inputs.table(data.targets ? data.targets.slice(0, 10) : [])
+```
 
 ## Honesty & provenance
 
