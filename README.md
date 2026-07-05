@@ -3,7 +3,7 @@
 **Rank 100,000 telecom customers by churn risk, then turn those risk scores into a dollar-weighted
 retention plan** — who to contact, how many churners you catch, and the projected ROI of the campaign.
 
-> 🔗 **Live interactive report:** **<https://akhillavudya.github.io/telecom-churn-retention/>** — Quarto report with an Observable JS ROI calculator (sliders → live net benefit / ROI), hosted static on GitHub Pages.
+> 🔗 **Live interactive report:** **<https://akhillavudya.github.io/telecom-churn-retention/>** — Quarto report with an Observable JS ROI calculator (sliders → live net benefit / ROI), a **SHAP** interpretability panel, a **segment-level ROI** breakdown, and a **downloadable target list** — hosted static on GitHub Pages.
 > 📊 **Slide deck:** [`reports/slides.pdf`](reports/slides.pdf) (15 slides).
 
 ---
@@ -77,6 +77,9 @@ numbers are **not** the headline results. To reproduce the real figures, drop th
    probabilities into "contact the top X%, catch Y% of churners."
 5. **Expected-value ROI** — combine the gains curve with offer cost, success rate, and value horizon
    into a projected net benefit, then stress-test it with a **sensitivity analysis**.
+6. **Interpretability & deliverables** — a **SHAP** beeswarm explains per-customer risk, a
+   **segment-level ROI** breakdown shows where the budget pays back best, and the report exports an
+   anonymised **top-2,000 target list** as CSV.
 
 ## Key results
 

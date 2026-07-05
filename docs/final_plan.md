@@ -159,9 +159,9 @@ Use only these on the CV/README, **with the honesty labels**:
 ## 6. NICE-TO-HAVE (only after §3–§4 ship)
 
 Ranked by impact-per-effort:
-1. **SHAP explanation panel** in the Quarto report (beeswarm on the XGBoost model) — modern, recognizable interpretability signal; strengthens the "why these customers" story. *M.*
-2. **Segment-level ROI breakdown** — split the lift table by a key driver (equipment age / overage) so the recommendation is actionable per segment. *S–M, pure DA value.*
-3. **A downloadable "target list" export** in the report (top-N risk-ranked customers as CSV, from precomputed scores). *S.*
+1. [x] **SHAP explanation panel** in the Quarto report (beeswarm on the XGBoost model) — modern, recognizable interpretability signal; strengthens the "why these customers" story. *M.* — **done: `12_shap_beeswarm.png` + report section. See `docs/explanation/step8_nice_to_haves.md`**
+2. [x] **Segment-level ROI breakdown** — split the lift table by a key driver (equipment age / overage) so the recommendation is actionable per segment. *S–M, pure DA value.* — **done: risk-targeted-within-segment ROI; found new-handset churners give best ROI (2.4× vs 1.8×) despite lower churn. `13_segment_roi.png`.**
+3. [x] **A downloadable "target list" export** in the report (top-N risk-ranked customers as CSV, from precomputed scores). *S.* — **done: anonymised top-2,000 in `data.json`, client-side CSV download button + preview table.**
 
 **Explicitly descoped:** a live model-scoring API/app (backend collides with Modal/FastAPI already used; adds hosting cost + secrets for little CV gain here). Keep this project static + interactive-via-OJS.
 
@@ -213,5 +213,6 @@ Alt DS-flavored line (if space on a DS CV): *"Engineered 6 domain features, benc
 - [x] Interactive OJS ROI calculator (sliders → live net benefit / ROI) (Task 6) — **4 sliders → 6 live result cards + reactive net-benefit chart, all client-side on `data.json`; defaults reproduce $2.07M / 2.1×. See `docs/explanation/step6_ojs_calculator.md`**
 - [x] `git init`, `.gitignore`, push public GitHub (Task 7) — **pushed to `github.com/Akhillavudya/telecom-churn-retention` (main)**
 - [x] `quarto publish gh-pages` (or Cloudflare Pages); pin URL at README top (Task 7) — **rendered `_site` published to `gh-pages` branch (manual, since Quarto's bundled publisher hit an SSL error — system git works); URL pinned at README top. See `docs/explanation/step7_deploy.md`**
-- [ ] Re-confirm AUC 0.70 / 79.5% decile / $2.07M / 2.1× before publishing; label ROI as projected
+- [x] Re-confirm AUC 0.70 / 79.5% decile / $2.07M / 2.1× before publishing; label ROI as projected — **re-verified on the latest real-data run; ROI labelled "projected/modeled" throughout**
+- [x] §6 nice-to-haves — SHAP panel, segment-level ROI, downloadable target list (all 3) — **done on real data. See `docs/explanation/step8_nice_to_haves.md`**
 </content>
