@@ -206,11 +206,11 @@ Alt DS-flavored line (if space on a DS CV): *"Engineered 6 domain features, benc
 
 - [ ] Confirm/handle GCI data licensing; sample or `.gitignore` the CSVs (Task 1)
 - [x] Restructure into industry-standard DA layout — `data/`, `src/`, `notebooks/`, `reports/`, `docs/`; update hard-coded paths; re-run `analysis.py` to confirm all 11 figures regenerate (Task 1.5, §2A) — **done; all 3 scripts reproduce end-to-end, see `docs/explanation/step1_5_explanation.md`**
-- [ ] `requirements.txt` pinned (Task 2)
-- [ ] `README.md` — pitch, run steps, locked numbers, 3 embedded figures, honesty box (Task 3)
-- [ ] Resolve `[CITE]`s / strip internal to-do language (Task 4)
-- [ ] Quarto `index.qmd` telling the story from existing figures + `data.json` aggregates (Task 5)
-- [ ] Interactive OJS ROI calculator (sliders → live net benefit / ROI) (Task 6)
+- [x] `requirements.txt` pinned (Task 2) — 6 direct deps at exact installed versions; see `docs/explanation/step2_requirements.md`
+- [x] `README.md` — pitch, run steps, locked numbers, 3 embedded figures, honesty box (Task 3) — **drafted; one placeholder (live Quarto URL) pending Task 7. See `docs/explanation/step3_readme.md`**
+- [x] Resolve `[CITE]`s / strip internal to-do language (Task 4) — **`REFERENCES_AND_ASSUMPTIONS.md` rewritten (market claims cut, assumptions labeled); `build_notebook.py` rubric phrase removed + notebook regenerated (0 leaks remain). See `docs/explanation/step4_provenance_cleanup.md`**
+- [x] Quarto `index.qmd` telling the story from existing figures + `data.json` aggregates (Task 5) — **renders to a self-contained `_site/index.html` (6 figures inlined); `data.json` exports the full gains curve from `analysis.py`. See `docs/explanation/step5_quarto_report.md`**
+- [x] Interactive OJS ROI calculator (sliders → live net benefit / ROI) (Task 6) — **4 sliders → 6 live result cards + reactive net-benefit chart, all client-side on `data.json`; defaults reproduce $2.07M / 2.1×. See `docs/explanation/step6_ojs_calculator.md`**
 - [ ] `git init`, `.gitignore`, push public GitHub (Task 7)
 - [ ] `quarto publish gh-pages` (or Cloudflare Pages); pin URL at README top (Task 7)
 - [ ] Re-confirm AUC 0.70 / 79.5% decile / $2.07M / 2.1× before publishing; label ROI as projected

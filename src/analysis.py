@@ -10,6 +10,7 @@ Figures are written to ./figures/ and key numbers printed to stdout.
 """
 
 import os
+import json
 import warnings
 from pathlib import Path
 
@@ -341,6 +342,36 @@ plt.xlabel("Offer success rate (assumption)")
 plt.ylabel("Net benefit ($M)")
 plt.title("Net benefit is robust across success-rate assumptions")
 savefig("11_sensitivity.png")
+
+# Export the cumulative-gains curve + assumptions as JSON so the Quarto ROI calculator recomputes live in the browser
+order_r = order.reset_index(drop=True)
+churn_arr = order_r["churn"].to_numpy()
+rev_arr = order_r["avgrev"].to_numpy(dtype=float)
+cum_caught = np.cumsum(churn_arr)
+cum_rev_churn = np.nancumsum(np.where(churn_arr == 1, rev_arr, np.nan))
+cum_n_churn_rev = np.cumsum((churn_arr == 1) & ~np.isnan(rev_arr))
+curve = []
+for f in np.linspace(0.01, 1.0, 100):
+    k = max(1, int(round(f * len(order_r))))
+    caught = int(cum_caught[k - 1])
+    arpu = float(cum_rev_churn[k - 1] / cum_n_churn_rev[k - 1]) if cum_n_churn_rev[k - 1] > 0 else 0.0
+    curve.append({
+        "frac": round(float(f), 4),
+        "contacted_full": round(k * scale),
+        "churners_caught_full": round(caught * scale, 1),
+        "arpu_caught": round(arpu, 2),
+    })
+report_data = {
+    "base_customers": int(BASE_CUSTOMERS),
+    "total_churners_full": round(float(total_churn) * scale, 1),
+    "defaults": {"offer_cost": OFFER_COST, "success_rate": SUCCESS_RATE,
+                 "horizon_months": HORIZON_MONTHS, "target_fraction": TARGET_FRACTION},
+    "curve": curve,
+}
+data_out = ROOT / "reports" / "quarto" / "data.json"
+data_out.parent.mkdir(parents=True, exist_ok=True)
+data_out.write_text(json.dumps(report_data, indent=2))
+print(f"Wrote calculator data -> {data_out}")
 
 print(f"\nAll figures saved to {FIG_DIR}")
 print("DONE.")

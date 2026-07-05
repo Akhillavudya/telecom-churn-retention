@@ -1,0 +1,13 @@
+project:
+  output-dir: _site
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-location: left
+    toc-title: "Contents"
+    embed-resources: true
+    fig-align: center
+    fig-cap-location: bottom
+    code-tools: false
