@@ -211,7 +211,7 @@ Alt DS-flavored line (if space on a DS CV): *"Engineered 6 domain features, benc
 - [x] Resolve `[CITE]`s / strip internal to-do language (Task 4) — **`REFERENCES_AND_ASSUMPTIONS.md` rewritten (market claims cut, assumptions labeled); `build_notebook.py` rubric phrase removed + notebook regenerated (0 leaks remain). See `docs/explanation/step4_provenance_cleanup.md`**
 - [x] Quarto `index.qmd` telling the story from existing figures + `data.json` aggregates (Task 5) — **renders to a self-contained `_site/index.html` (6 figures inlined); `data.json` exports the full gains curve from `analysis.py`. See `docs/explanation/step5_quarto_report.md`**
 - [x] Interactive OJS ROI calculator (sliders → live net benefit / ROI) (Task 6) — **4 sliders → 6 live result cards + reactive net-benefit chart, all client-side on `data.json`; defaults reproduce $2.07M / 2.1×. See `docs/explanation/step6_ojs_calculator.md`**
-- [ ] `git init`, `.gitignore`, push public GitHub (Task 7)
-- [ ] `quarto publish gh-pages` (or Cloudflare Pages); pin URL at README top (Task 7)
+- [x] `git init`, `.gitignore`, push public GitHub (Task 7) — **pushed to `github.com/Akhillavudya/telecom-churn-retention` (main)**
+- [x] `quarto publish gh-pages` (or Cloudflare Pages); pin URL at README top (Task 7) — **rendered `_site` published to `gh-pages` branch (manual, since Quarto's bundled publisher hit an SSL error — system git works); URL pinned at README top. See `docs/explanation/step7_deploy.md`**
 - [ ] Re-confirm AUC 0.70 / 79.5% decile / $2.07M / 2.1× before publishing; label ROI as projected
 </content>

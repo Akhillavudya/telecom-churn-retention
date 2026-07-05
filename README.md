@@ -3,7 +3,7 @@
 **Rank 100,000 telecom customers by churn risk, then turn those risk scores into a dollar-weighted
 retention plan** — who to contact, how many churners you catch, and the projected ROI of the campaign.
 
-> 🔗 **Live interactive report:** _coming soon_ — Quarto + Observable JS ROI calculator on GitHub Pages (Task 7).
+> 🔗 **Live interactive report:** **<https://akhillavudya.github.io/telecom-churn-retention/>** — Quarto report with an Observable JS ROI calculator (sliders → live net benefit / ROI), hosted static on GitHub Pages.
 > 📊 **Slide deck:** [`reports/slides.pdf`](reports/slides.pdf) (15 slides).
 
 ---
@@ -107,7 +107,7 @@ Full reasoning and citations: [`docs/REFERENCES_AND_ASSUMPTIONS.md`](docs/REFERE
 ├── data/                  # raw/ (git-ignored) + data dictionary
 ├── src/                   # reproducible pipeline (analysis, notebook builder, slides)
 ├── notebooks/             # exploratory churn_analysis.ipynb
-├── reports/               # generated figures + slides.pdf + (soon) the Quarto site
+├── reports/               # generated figures + slides.pdf + Quarto site (quarto/)
 ├── docs/                  # plan, audit, assumptions, per-step explanations
 ├── requirements.txt       # pinned dependencies
 └── README.md
